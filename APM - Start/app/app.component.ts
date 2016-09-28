@@ -1,17 +1,40 @@
 
 import {Component} from 'angular2/core'
+import{ProductService} from './products/product.service'
+import {HTTP_PROVIDERS} from 'angular2/http'
+import {ROUTER_PROVIDERS,RouteConfig,ROUTER_DIRECTIVES} from 'angular2/router'
+import 'rxjs/Rx';   // Load all features
+
+import {WelcomeComponent} from './home/welcome.component'
 import {ProductListComponent} from './products/product-list.component'
+import {ProductDetailComponent} from './products/product-detail.component'
 @Component({
 	selector: 'pm-app',
 	template:`
 	<div>
-	<h1>{{Title}}</h1>
-	<pm-products></pm-products>
-	</div>
+        <nav class='navbar navbar-default'>
+            <div class='container-fluid'>
+                <a class='navbar-brand'>{{Title}}</a>
+                <ul class='nav navbar-nav'>
+                    <li><a [routerLink]="['Welcome']">Home</a></li>
+                    <li><a [routerLink]="['Products']">Product List</a></li>
+                </ul>
+            </div>			 
+        </nav>
+		<div class='container'>
+           	 <router-outlet></router-outlet>
+            </div>
+     </div>
 `,
-directives:[ProductListComponent]
+directives:[ROUTER_DIRECTIVES],
+providers:[ProductService,HTTP_PROVIDERS,ROUTER_PROVIDERS]
 })
+@RouteConfig([
+	{ path: '/welcome', name: 'Welcome', component: WelcomeComponent, useAsDefault: true },
+    { path: '/products', name: 'Products', component: ProductListComponent },
+	{ path: '/products/:id', name: 'ProductDetail', component: ProductDetailComponent }
+])
 export class AppComponent
 {
-	Title: string ="ACME Product Manegment"	
+	Title: string ="ACME Product Manegment"
 }
